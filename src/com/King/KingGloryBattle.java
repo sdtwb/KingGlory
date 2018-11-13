@@ -29,7 +29,8 @@ public class KingGloryBattle extends JPanel {
 	public static final int herroSize= 80;
 	
 	public static BufferedImage background;
-	public static BufferedImage people;
+	public static BufferedImage people1;
+	public static BufferedImage people2;
 	public static BufferedImage bulletImage;
 	public static BufferedImage boom;
 	public static Timer timer;
@@ -46,7 +47,8 @@ public class KingGloryBattle extends JPanel {
 	static {
 		try {
 			background= ImageIO.read(KingGloryBattle.class.getResource("map.jpg"));
-			people= ImageIO.read(KingGloryBattle.class.getResource("people1.png"));
+			people1= ImageIO.read(KingGloryBattle.class.getResource("people1.png"));
+			people2= ImageIO.read(KingGloryBattle.class.getResource("people2.png"));
 			boom= ImageIO.read(KingGloryBattle.class.getResource("bullet-Boom.png"));
 			//bulletImage= ImageIO.read(KingGloryBattle.class.getResource("bullet.png"));
 			position= new int[Maxx][Maxx];
@@ -82,9 +84,9 @@ public class KingGloryBattle extends JPanel {
 	}
 	public void paintHerro(Graphics g) {
 		if(assassinA.getIsAlive()== 1)
-			g.drawImage(people, assassinA.getX(), assassinA.getY(), null);
+			g.drawImage(people1, assassinA.getX(), assassinA.getY(), null);
 		if(assassinB.getIsAlive()== 1)
-			g.drawImage(people, assassinB.getX(), assassinB.getY(), null);
+			g.drawImage(people2, assassinB.getX(), assassinB.getY(), null);
 	}
 	
 	public static void main(String[] args) {
