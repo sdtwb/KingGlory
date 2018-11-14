@@ -38,7 +38,8 @@ public class Bullet {
 		  }
       }
       
-      BufferedImage getImage() {
+      
+      public BufferedImage getImage() {
            if(this.toX!= 0)
     		   return this.toX== -1? this.images[2]:this.images[3];
     	   else
@@ -46,33 +47,33 @@ public class Bullet {
     		   
     		  
       }
-      void setStillAlive() {
+      public void setStillAlive() {
     	  this.stillAlive= 1;
     	  this.toX= 0;
     	  this.toY= 0;
       }
-      int getStillAlive() {
+      public int getStillAlive() {
     	  return this.stillAlive;
       }
-      int getX() {
+      public int getX() {
     	  return x;
       }
-      int getY() {
+      public int getY() {
     	  return y;
       }
-      void setToX(int a) {
+      public void setToX(int a) {
     	 
     	  toX= a;
       }
-      void setToY(int a) {
+      public void setToY(int a) {
     	
     	  toY= a;
       }
-      void setBullet(int a, int b) {
+      public void setBullet(int a, int b) {
     	  this.x= a+ 15;
     	  this.y= b+ 15;
       }
-      void step() {
+      public void step() {
     	  this.x+= this.toX;
     	 
     	  this.y+= this.toY;

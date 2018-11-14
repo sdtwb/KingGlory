@@ -3,6 +3,7 @@ package com.King;
 public class Herro {
       int x;
       int y;
+      int life;
       int isAlive;
       int moveToX;
       int moveToY;
@@ -12,28 +13,29 @@ public class Herro {
 //    	  y= 200;
     	  isAlive= 1;
     	  stillMove= 0;
+    	  life= 200;
       }
-     void moveTo(int xx, int yy) {
+     public void moveTo(int xx, int yy) {
     	   this.stillMove= 1;
            moveToX= xx;
            moveToY= yy;
      }
-     int getX() {
+     public int getX() {
     	 return this.x;
      }
-     int getY() {
+     public int getY() {
     	 return this.y;
      }
-     int getIsAlive() {
+     public int getIsAlive() {
     	 return isAlive;
      }
-     void setStillMove() {
+     public void setStillMove() {
     	 this.stillMove= this.stillMove== 0?1: 0;
      }
-     int getStillMove() {
+     public int getStillMove() {
     	 return stillMove;
      }
-     void step() {
+     public void step() {
     	 if(this.x< moveToX) 
     		 this.x++;
     	 else if(this.x> moveToX)

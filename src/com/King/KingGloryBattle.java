@@ -1,5 +1,6 @@
 package com.King;
 
+
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,8 +21,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-
+/**
+ * @author Wenbiao Tan
+ */
 public class KingGloryBattle extends JPanel {
+
 
 	public static final int WIDTH = 1000; // 面板宽
 	public static final int HEIGHT = 764; // 面板高
@@ -41,9 +45,12 @@ public class KingGloryBattle extends JPanel {
 	public static int herroSum;
 	//英雄
 	Herro hero= new Herro();
-	Assassin assassinA= new Assassin(0, 0);
+	Assassin assassinA= new Assassin(400, 400);
 	Assassin assassinB= new Assassin(0, 0);
-
+	Fighter fighterA= new Fighter(0, 0);
+	Fighter fighterB= new Fighter(0, 0);	
+    Robbi robbiA= new Robbi(0, 0);
+    Robbi robbiB= new Robbi(0, 0);
 	static {
 		try {
 			background= ImageIO.read(KingGloryBattle.class.getResource("map.jpg"));
@@ -65,12 +72,25 @@ public class KingGloryBattle extends JPanel {
 		
 	}
 	
+	/**
+	 * 将图片绘画上窗体
+	 */
 	public void paint(Graphics g) {
+		
+		try {
+			Thread.sleep(50);
+		}catch(Exception e) {
+			
+		}
 		g.drawImage(background, 0, 0, null); // 画背景图
 		paintHerro(g);
 		paintBullet(g);
 	}
 	
+	/**
+	 * 绘画炸弹
+	 * @param g 同一张图片
+	 */
 	public void paintBullet(Graphics g) {
 		for(int i= 0; i< Maxx; i++) {
 			if(herroBullet[i].getStillAlive()== 1)
@@ -82,6 +102,11 @@ public class KingGloryBattle extends JPanel {
 		}
 		
 	}
+	
+	/**
+	 * 绘画英雄
+	 * @param g 同一张图片
+	 */
 	public void paintHerro(Graphics g) {
 		if(assassinA.getIsAlive()== 1)
 			g.drawImage(people1, assassinA.getX(), assassinA.getY(), null);
@@ -89,10 +114,17 @@ public class KingGloryBattle extends JPanel {
 			g.drawImage(people2, assassinB.getX(), assassinB.getY(), null);
 	}
 	
+	/**
+	 * 王者荣耀垃圾版主函数
+	 * @param args 没作用
+	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 		     KeyAdapter key= new KeyAdapter() {
+		    /**
+		     * 键盘按下
+		     */
 			   public  void keyPressed(KeyEvent e) {
 	               
 				   if(e.getKeyCode()== KeyEvent.VK_UP)
@@ -129,7 +161,9 @@ public class KingGloryBattle extends JPanel {
 		
 	}
 	
-	
+	/**
+	 * 主要线程函数
+	 */
 	public void action() {
 		MouseAdapter mouse= new MouseAdapter() {
 			public void mouseMoved(MouseEvent e) {
@@ -167,6 +201,9 @@ public class KingGloryBattle extends JPanel {
 		
 	}
 	
+	/**
+	 * 判断炸弹时候可以爆炸
+	 */
 	public void checkBullet() {
 		 for(int i= 0; i< Maxx; i++) {
 			 if(i!= index&&((herroBullet[index].getX()==position[i][0]+ 15)&&(herroBullet[index].getY()== position[i][1]+ 15))) {
@@ -176,6 +213,9 @@ public class KingGloryBattle extends JPanel {
 		 }
 
 	}
+	/**
+	 * 执行炸弹的下一步
+	 */
 	public void bulletStep() {
 		for(int i= 0; i< Maxx; i++) {
 			if(herroBullet[i].getStillAlive()== 1) {
@@ -185,6 +225,10 @@ public class KingGloryBattle extends JPanel {
 				
 		}
 	}
+	
+	/**
+	 * 判断炸弹是否符合发射条件
+	 */
 	public void canAttack() {
 		for(int i= 0 ; i< Maxx ; i++) {
 			if(i!= index&&(position[index][0]== position[i][0]||position[index][1]== position[i][1])) {
@@ -203,6 +247,12 @@ public class KingGloryBattle extends JPanel {
 			}
 		}
 	}
+	
+	/**
+	 * 英雄移到
+	 * @param x 英雄移动到的X坐标
+	 * @param y 英雄移动到的Y坐标
+	 */
 	public void herroMoveTo(int x, int y) {
 		if(index== 0) {
     		assassinA.moveTo(x, y); 	
@@ -215,6 +265,9 @@ public class KingGloryBattle extends JPanel {
 	
 	}   
 	
+	/**
+	 * 英雄的下一步
+	 */
 	public void HerroStep() {
 		if(assassinA.getStillMove()== 0) 
 			assassinA.step();
@@ -222,9 +275,16 @@ public class KingGloryBattle extends JPanel {
 			assassinB.step();
 	}
 	
-	//获取英雄的X坐标，Y坐标
+	/**
+	 * 获取英雄的X坐标，Y坐标
+	 */
 	public void getHerroPosition() {
 		  position[0][0]= assassinA.getX(); position[0][1]= assassinA.getY();
 		  position[1][0]= assassinB.getX(); position[1][1]= assassinB.getY();
+		  position[2][0]= fighterA.getX(); position[2][1]= fighterA.getY();
+		  position[3][0]= fighterB.getX(); position[3][1]= fighterB.getY();
+		  position[4][0]= robbiA.getX(); position[4][1]= robbiA.getY();
+		  position[5][0]= robbiB.getX(); position[5][1]= robbiB.getY();
+
 	}
 }
