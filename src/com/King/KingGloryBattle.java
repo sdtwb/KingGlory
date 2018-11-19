@@ -22,6 +22,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import org.apache.log4j.Logger;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 
 /**
  * @author Wenbiao Tan
@@ -352,6 +355,16 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 			 if(i!= index&&((herroBullet[index].getX()==position[i][0]+ 15)&&(herroBullet[index].getY()== position[i][1]+ 15))) {
 				  herroBullet[index].stillAlive= 0;
 				  herroBullet[index].timeToBoom= 1;
+				   
+				  Logger logger = Logger.getLogger(KingGloryBattle.class);
+				    //使用默认的配置信息，不需要写log4j.properties
+			        BasicConfigurator.configure();
+			        //设置日志输出级别为info，这将覆盖配置文件中设置的级别
+			        logger.setLevel(Level.INFO);
+			        //下面的消息将被输出
+			        logger.warn("Out of Bound!");
+			        logger.warn(herroBullet[index].x+ herroBullet[index].y);
+			       
 			 }
 		 }
 
@@ -368,6 +381,13 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 				
 		}
 	}
+
+	String Herroo(int x) {
+		return "up";
+	}
+   String strHerro(int x) {
+	   return "Up";
+   }
 	
 	/**
 	 * 判断炸弹是否符合发射条件
