@@ -1,5 +1,7 @@
 package com.King;
 
+import java.awt.image.BufferedImage;
+
 public class Herro {
       int x;
       int y;
@@ -8,13 +10,20 @@ public class Herro {
       int moveToX;
       int moveToY;
       int stillMove;
-      Herro(){
-//    	  x= 500;
-//    	  y= 200;
+      BufferedImage image;
+      Herro(int xx, int yy){
+    	  x= xx;
+    	  y= yy;
     	  isAlive= 1;
     	  stillMove= 0;
     	  life= 200;
       }
+     public void setImage(BufferedImage im) {
+    	 image= im;
+     }
+     public BufferedImage getImage() {
+    	 return image;
+     }
      public void moveTo(int xx, int yy) {
     	   this.stillMove= 1;
            moveToX= xx;

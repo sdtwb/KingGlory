@@ -14,7 +14,10 @@ public class Bullet {
       int toY;
       int change= 0;
       int timeToBoom;
-      BufferedImage images[];
+      int index;
+      BufferedImage bullet[];
+      BufferedImage water[];
+      BufferedImage fire[];
       
       Bullet(){
     	  this.stillAlive= 0;
@@ -23,27 +26,61 @@ public class Bullet {
     	  this.x= 0;
     	  this.y= 0;
     	  this.timeToBoom= 0;
-    	  this.images= new BufferedImage[imageSum];
+    	  this.bullet= new BufferedImage[imageSum];
+    	  this.water= new BufferedImage[imageSum];
+    	  this.fire= new BufferedImage[imageSum];
     	  
     	  try {
-			this.images[0]= ImageIO.read(Bullet.class.getResource("bullet-Up.png"));
-			this.images[1]= ImageIO.read(Bullet.class.getResource("bullet-Down.png"));
-			this.images[2]= ImageIO.read(Bullet.class.getResource("bullet-Left.png"));
-			this.images[3]= ImageIO.read(Bullet.class.getResource("bullet-Right.png"));
+			this.bullet[0]= ImageIO.read(Bullet.class.getResource("bullet-Up.png"));
+			this.bullet[1]= ImageIO.read(Bullet.class.getResource("bullet-Down.png"));
+			this.bullet[2]= ImageIO.read(Bullet.class.getResource("bullet-Left.png"));
+			this.bullet[3]= ImageIO.read(Bullet.class.getResource("bullet-Right.png"));
+			this.water[0]= ImageIO.read(Bullet.class.getResource("water-Up.png"));
+			this.water[1]= ImageIO.read(Bullet.class.getResource("water-Down.png"));
+			this.water[2]= ImageIO.read(Bullet.class.getResource("water-Left.png"));
+			this.water[3]= ImageIO.read(Bullet.class.getResource("water-Right.png"));
+			this.fire[0]= ImageIO.read(Bullet.class.getResource("fire-Up.png"));
+			this.fire[1]= ImageIO.read(Bullet.class.getResource("fire-Down.png"));
+			this.fire[2]= ImageIO.read(Bullet.class.getResource("fire-Left.png"));
+			this.fire[3]= ImageIO.read(Bullet.class.getResource("fire-Right.png"));
 			
-			this.images[4]= ImageIO.read(Bullet.class.getResource("bullet-Boom.png"));
+			this.bullet[4]= ImageIO.read(Bullet.class.getResource("bullet-Boom.png"));
+			this.water[4]= ImageIO.read(Bullet.class.getResource("water-Boom.png"));
 		  } catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		  }
       }
       
-      
+      public BufferedImage getBoom() {
+    	  if(this.index== 4||this.index== 5)
+    		   return this.water[4];
+    	  else
+    	       return bullet[4];
+      }
+      public void setIndex(int in) {
+    	  this.index= in;
+      }
       public BufferedImage getImage() {
-           if(this.toX!= 0)
-    		   return this.toX== -1? this.images[2]:this.images[3];
-    	   else
-    		   return this.toY== -1? this.images[0]: this.images[1];
+    	  if(this.index== 0||this.index== 1) {
+             if(this.toX!= 0)
+    		   return this.toX== -1? this.bullet[2]:this.bullet[3];
+    	     else
+    		   return this.toY== -1? this.bullet[0]: this.bullet[1];   		  
+    	  }
+    	  else if(this.index== 2|| this.index== 3) {
+              if(this.toX!= 0)
+       		   return this.toX== -1? this.fire[2]:this.fire[3];
+       	     else
+       		   return this.toY== -1? this.fire[0]: this.fire[1];     		  
+    	  }
+    	  else {
+              if(this.toX!= 0)
+       		   return this.toX== -1? this.water[2]:this.water[3];
+       	     else
+       		   return this.toY== -1? this.water[0]: this.water[1];     		  
+    	  }
+
     		   
     		  
       }
