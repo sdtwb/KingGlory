@@ -22,17 +22,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import org.apache.log4j.Logger;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 
 /**
  * @author Wenbiao Tan
  */
-public class KingGloryBattle extends JPanel implements ActionListener{
+public class KingGloryBattle extends JPanel implements ActionListener, KeyListener{
 
 
-	public static final int WIDTH = 1000; // 面板宽
+	public static final int WIDTH = 1000+ 50; // 面板宽
 	public static final int HEIGHT = 764; // 面板高
 	public static final int Maxx= 15;
 	public static final int herroSize= 80;
@@ -45,6 +42,7 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 	public static BufferedImage people5;
 	public static BufferedImage people6;
 	public static BufferedImage bulletImage;
+	public static BufferedImage victory;
 	public static Timer timer;
 	public static int index;
 	public static int position[][];
@@ -58,6 +56,8 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 	public static  Fighter fighterB;	
 	public static  Robbi robbiA;
 	public static  Robbi robbiB;
+	public static int herroAnum;
+	public static int herroBnum;
 	static {
 		try {
 			background= ImageIO.read(KingGloryBattle.class.getResource("map.jpg"));
@@ -67,13 +67,14 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 			people4= ImageIO.read(KingGloryBattle.class.getResource("people-YanJian.png"));
 			people5= ImageIO.read(KingGloryBattle.class.getResource("people-BianQue.png"));
 			people6= ImageIO.read(KingGloryBattle.class.getResource("people-ZhuGe.png"));
+			victory= ImageIO.read(KingGloryBattle.class.getResource("victory.png"));
 			
-			assassinA= new Assassin(400, 400);
-			assassinB= new Assassin(330, 330);
-			fighterA= new Fighter(0, 0);
-			fighterB= new Fighter(0, 0);	
-			robbiA= new Robbi(0, 0);
-			robbiB= new Robbi(0, 0);
+			assassinA= new Assassin(600, 50);
+			assassinB= new Assassin(700, 50);
+			fighterA= new Fighter(50, 550);
+			fighterB= new Fighter(800, 80);	
+			robbiA= new Robbi(120, 600);
+			robbiB= new Robbi(900, 50);
 			
 			
 			assassinA.setImage(people1);
@@ -85,9 +86,11 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 			
 			position= new int[Maxx][Maxx];
 			herroBullet= new Bullet[Maxx];
-			status= "";
+			status= "END";
 			herroSum= 2;
-            
+			herroAnum= 5;
+            herroBnum= 5;
+			
 			for(int i= 0; i< Maxx; i++)
 				herroBullet[i]= new Bullet();
 		} catch (IOException e) {
@@ -102,16 +105,19 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 	 */
 	public void paint(Graphics g) {
 		
-		try {
-			Thread.sleep(50);
-		}catch(Exception e) {
-			
-		}
 		g.drawImage(background, 0, 0, null); // 画背景图
 		paintHerro(g);
 		paintBullet(g);
+		paintVictory(g);
 	}
 	
+	public void paintVictory(Graphics g) {
+		if(herroAnum== 0||herroBnum== 0) {
+			g.drawImage(victory, 0, 0, null);
+			status= "END";
+		}
+			 
+	}
 	/**
 	 * 绘画炸弹
 	 * @param g 同一张图片
@@ -151,12 +157,12 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 	
 //-----------------------------------------------------------------------	
 	JFrame frame = new JFrame("王者荣耀");
-	JButton button0= new JButton("Herro0");
-	JButton button1= new JButton("Herro1");
-	JButton button2= new JButton("Herro2");
-	JButton button3= new JButton("Herro3");
-	JButton button4= new JButton("Herro4");
-	JButton button5= new JButton("Herro5");
+	JButton button0= new JButton("鲁班");
+	JButton button1= new JButton("后裔");
+	JButton button2= new JButton("猴子");
+	JButton button3= new JButton("杨戬");
+	JButton button4= new JButton("扁鹊");
+	JButton button5= new JButton("诸葛亮");
 	JButton button6= new JButton("Herro6");
 	JButton button7= new JButton("Herro7");
 	JButton button8= new JButton("Herro8");
@@ -164,58 +170,91 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 	JButton button10= new JButton("START");
 	JPanel panel= new JPanel();
 
-	static KeyAdapter key= new KeyAdapter() {
-		    /**
-		     * 键盘按下
-		     */
-			   public  void keyPressed(KeyEvent e) {
-	               
-				   if(e.getKeyCode()== KeyEvent.VK_0)
-				        index= 0;
-				   else if(e.getKeyCode()== KeyEvent.VK_1) {
-					   index= 1;
-				   }
-				   else if(e.getKeyCode()== KeyEvent.VK_2) {
-					   index= 2;
-				   }
-				   else if(e.getKeyCode()== KeyEvent.VK_3) {
-					   index= 3;
-				   }
-				   else if(e.getKeyCode()== KeyEvent.VK_4) {
-					   index= 4;
-				   }
-				   else if(e.getKeyCode()== KeyEvent.VK_5) {
-					   index= 5;
-				   }
-				   else if(e.getKeyCode()== KeyEvent.VK_6) {
-					   index= 6;
-				   }
-				   else if(e.getKeyCode()== KeyEvent.VK_7) {
-					   index= 7;
-				   }
-				   else if(e.getKeyCode()== KeyEvent.VK_8) {
-					   index= 8;
-				   }
-				   else if(e.getKeyCode()== KeyEvent.VK_9) {
-					   index= 9;
-				   }
-				   else if(e.getKeyCode()== KeyEvent.VK_S) {
-					    status= "START";
-				   }
-			   }
-			   
-
-				public void keyReleased(KeyEvent e) {}
-				public void keyTyped(KeyEvent e) {}
-			   
-			};
+    /**
+     * 键盘按下
+     */
+	//KeyAdapter key= new KeyAdapter() {
+    public  void keyPressed(KeyEvent e) {
+	   if(e.getKeyCode()== KeyEvent.VK_0)
+	        index= 0;
+	   else if(e.getKeyCode()== KeyEvent.VK_1) {
+		   index= 1;
+	   }
+	   else if(e.getKeyCode()== KeyEvent.VK_2) {
+		   index= 2;
+	   }
+	   else if(e.getKeyCode()== KeyEvent.VK_3) {
+		   index= 3;
+	   }
+	   else if(e.getKeyCode()== KeyEvent.VK_4) {
+		   index= 4;
+	   }
+	   else if(e.getKeyCode()== KeyEvent.VK_5) {
+		   index= 5;
+	   }
+	   else if(e.getKeyCode()== KeyEvent.VK_6) {
+		   index= 6;
+	   }
+	   else if(e.getKeyCode()== KeyEvent.VK_7) {
+		   index= 7;
+	   }
+	   else if(e.getKeyCode()== KeyEvent.VK_8) {
+		   index= 8;
+	   }
+	   else if(e.getKeyCode()== KeyEvent.VK_9) {
+		   index= 9;
+	   }
+	   else if(e.getKeyCode()== KeyEvent.VK_S) {
+		    status= "START";
+	   }
+	   else if(e.getKeyCode()== KeyEvent.VK_W){
+		    herroUp();
+	   }
+	   else if(e.getKeyCode()== KeyEvent.VK_S){
+		   herroDown();
+	   }
+	   else if(e.getKeyCode()== KeyEvent.VK_A){
+		   herroLeft();
+	   }	  
+	   else if(e.getKeyCode()== KeyEvent.VK_D){
+		   herroRight();
+	   }
+   }
+	public void keyReleased(KeyEvent e) {}
+	public void keyTyped(KeyEvent e) {}
+	//};		
+	public void herroLeft() {
+		
+	}
+	public void herroRight() {
+		
+	}
+    public void herroUp() {
+    	if(index== 0) assassinA.y--;
+    	if(index== 1) assassinB.y--;
+    	if(index== 2) fighterA.y--;
+    	if(index== 3) fighterB.y--;
+    	if(index== 4) robbiA.y--;
+    	if(index== 5) robbiB.y--;
+    }
+    public void herroDown() {
+    	if(index== 0) assassinA.y++;
+    	if(index== 1) assassinB.y++;
+    	if(index== 2) fighterA.y++;
+    	if(index== 3) fighterB.y++;
+    	if(index== 4) robbiA.y++;
+    	if(index== 5) robbiB.y++;
+    }
 	public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+		       //System.out.println("aaaaa");
 				if(button0== e.getSource()) {
+					
 					index= 0;
 				}
 				else if(button1== e.getSource()) {
 					index= 1;
+					
 				}
 				else if(button2== e.getSource()) {
 					index= 2;
@@ -244,7 +283,7 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 				else if(button10== e.getSource()) {
 					status= "START";
 				}
-
+				//frame.requestFocus();;
 				
 	}
 	
@@ -282,11 +321,12 @@ public class KingGloryBattle extends JPanel implements ActionListener{
     
     static KingGloryBattle game = new KingGloryBattle(); 
     public void Frame() {
-			frame.addKeyListener(key);
+			
 			panel.add(game);
 			frame.setLayout(new BorderLayout());
-			frame.add(panel,BorderLayout.NORTH);
+			frame.add(panel,BorderLayout.SOUTH);
 			frame.add(game, BorderLayout.CENTER);
+			frame.addKeyListener(this);
 			//frame.add(game); // 将面板添加到JFrame中
 			frame.setSize(WIDTH, HEIGHT); // 设置大小
 			frame.setAlwaysOnTop(true); // 设置其总在最上
@@ -294,8 +334,9 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 			frame.setIconImage(new ImageIcon("images/icon.jpg").getImage()); // 设置窗体的图标
 			frame.setLocationRelativeTo(null); // 设置窗体初始位置
 			//frame.setLocationRelativeTo(frame);
-			frame.setVisible(true); // 尽快调用paint
-
+			frame.setVisible(true); //设置窗口可见
+            //frame.setFocusable(true);
+            
 			game.action(); // 启动执行    	
     }
 	public static void main(String[] args) {
@@ -321,7 +362,7 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 				int x= e.getX();
 				int y= e.getY();
 				//status= "START";
-                herroMoveTo(x, y);
+                herroMoveTo(x- 40, y- 40);
 			}
 			
 		};
@@ -332,39 +373,75 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 		timer.schedule(new TimerTask() {
 			public void run() {
 				if(status== "START") {
-				  getHerroPosition();
-				  checkBullet();
-				  canAttack();
-				  HerroStep();
-				  bulletStep();					
+					  frame.requestFocus();
+					  scanHerroAlive();
+					  changeTimes();
+					  getHerroPosition();
+					  checkBullet();
+					  canAttack();
+					  HerroStep();
+					  bulletStep();
+				     
 				}
 
 				repaint();
 			}
 			
-		},10, 10);
+		},1000, 10);
 		
 		
 	}
-	
+	public void scanHerroAlive() {
+		herroAnum= 0;
+		herroBnum= 0;
+		if(assassinA.getIsAlive()== 1) herroAnum++;
+		if(assassinB.getIsAlive()== 1) herroBnum++;
+		if(fighterA.getIsAlive()== 1) herroAnum++;
+		if(fighterB.getIsAlive()== 1) herroBnum++;
+		if(robbiA.getIsAlive()== 1) herroAnum++;
+		if(robbiB.getIsAlive()== 1) herroBnum++;
+	}
+	public void changeTimes() {
+	     assassinA.addTimes();
+	     assassinB.addTimes();
+	     fighterA.addTimes();
+	     fighterB.addTimes();
+	     robbiA.addTimes();
+	     robbiB.addTimes();	
+	}
+	static int ignore= 0;
+	public void herroAutoMove() {
+		ignore++;
+		//if(ignore== 50) {
+			ignore= 0;
+		    if(index!= 0)
+		    	assassinA.autoMove();
+		    if(index!= 1)
+		    	assassinB.autoMove();
+		    if(index!= 2)
+		    	fighterA.autoMove();
+		    if(index!= 3)
+		    	fighterB.autoMove();
+		    if(index!= 4)
+		    	robbiA.autoMove();
+		    if(index!= 5)
+		    	robbiB.autoMove();			
+		//}
+
+	}
 	/**
 	 * 判断炸弹时候可以爆炸
 	 */
 	public void checkBullet() {
 		 for(int i= 0; i< Maxx; i++) {
-			 if(i!= index&&((herroBullet[index].getX()==position[i][0]+ 15)&&(herroBullet[index].getY()== position[i][1]+ 15))) {
+			 if(i!= index&&((herroBullet[index].getX()==position[i][0]+ 15)&&(herroBullet[index].getY()== position[i][1]+ 15))
+					 &&getHerroAlive(i)== 1) {
+				  if(herroBullet[index].stillAlive== 1)
+					  changeBeAttack(i);
 				  herroBullet[index].stillAlive= 0;
 				  herroBullet[index].timeToBoom= 1;
-				   
-				  Logger logger = Logger.getLogger(KingGloryBattle.class);
-				    //使用默认的配置信息，不需要写log4j.properties
-			        BasicConfigurator.configure();
-			        //设置日志输出级别为info，这将覆盖配置文件中设置的级别
-			        logger.setLevel(Level.INFO);
-			        //下面的消息将被输出
-			        logger.warn("Out of Bound!");
-			        logger.warn(herroBullet[index].x+ herroBullet[index].y);
-			       
+			  
+				  			       
 			 }
 		 }
 
@@ -381,20 +458,31 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 				
 		}
 	}
-
-	String Herroo(int x) {
-		return "up";
-	}
-   String strHerro(int x) {
-	   return "Up";
-   }
 	
+   public void changeBeAttack(int i) {
+	    if(i== 0) assassinA.beAttack();
+	    if(i== 1) assassinB.beAttack();
+	    if(i== 2) fighterA.beAttack();
+	    if(i== 3) fighterB.beAttack();
+	    if(i== 4) robbiA.beAttack();
+	    if(i== 5) robbiB.beAttack();
+   }
+   public int getHerroAlive(int i) {
+	    if(i== 0) return assassinA.getIsAlive();
+	    if(i== 1) return assassinB.getIsAlive();
+	    if(i== 2) return fighterA.getIsAlive();
+	    if(i== 3) return fighterB.getIsAlive();
+	    if(i== 4) return robbiA.getIsAlive();
+	    if(i== 5) return robbiB.getIsAlive();	
+	    
+	    return -1;
+   }
 	/**
 	 * 判断炸弹是否符合发射条件
 	 */
 	public void canAttack() {
 		for(int i= 0 ; i< Maxx ; i++) {
-			if(i!= index&&(position[index][0]== position[i][0]||position[index][1]== position[i][1])) {
+			if(i!= index&&(position[index][0]== position[i][0]||position[index][1]== position[i][1])&&getHerroAlive(i)== 1) {
 				if(herroBullet[i].getStillAlive()== 0) {
 				  herroBullet[index].setStillAlive();
 				  herroBullet[index].setIndex(index);
@@ -419,50 +507,43 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 	 */
 	public void herroMoveTo(int x, int y) {
 		if(index== 0) {
-    		assassinA.moveTo(x, y); 	
-			assassinA.setStillMove();
+    		assassinA.moveTo(x, y);//assassinA.setStillMove();
 		}
 		else if(index== 1) {
-			assassinB.moveTo(x, y);		
-			assassinB.setStillMove();
+			assassinB.moveTo(x, y);//assassinB.setStillMove();
 		}
 		else if(index== 2) {
-			fighterA.moveTo(x, y);		
-			fighterA.setStillMove();
+			fighterA.moveTo(x, y);//fighterA.setStillMove();
 		}
 		else if(index== 3) {
-			fighterB.moveTo(x, y);		
-			fighterB.setStillMove();
+			fighterB.moveTo(x, y);//fighterB.setStillMove();
 		}
 		else if(index== 4) {
-			robbiA.moveTo(x, y);		
-			robbiA.setStillMove();
+			robbiA.moveTo(x, y);//robbiA.setStillMove();
 		}
 		else if(index== 5) {
-			robbiB.moveTo(x, y);		
-			robbiB.setStillMove();
+			robbiB.moveTo(x, y);//robbiB.setStillMove();
 		}
-	
+	    
 	}   
 	
 	/**
 	 * 英雄的下一步
 	 */
 	public void HerroStep() {
-		if(assassinA.getStillMove()== 0) 
+		if(assassinA.getStillMove()== 1) 
 			assassinA.step();
-		if(assassinB.getStillMove()== 0)
+		if(assassinB.getStillMove()== 1)
 			assassinB.step();
-		if(fighterA.getStillMove()== 0)
+		if(fighterA.getStillMove()== 1)
 			fighterA.step();
-		if(fighterB.getStillMove()== 0)
+		if(fighterB.getStillMove()== 1)
 			fighterB.step();
-		if(robbiA.getStillMove()== 0)
+		if(robbiA.getStillMove()== 1)
 			robbiA.step();
-		if(robbiB.getStillMove()== 0)
+		if(robbiB.getStillMove()== 1)
 			robbiB.step();
 	}
-	
 	/**
 	 * 获取英雄的X坐标，Y坐标
 	 */
@@ -475,4 +556,5 @@ public class KingGloryBattle extends JPanel implements ActionListener{
 		  position[5][0]= robbiB.getX(); position[5][1]= robbiB.getY();
 
 	}
+
 }

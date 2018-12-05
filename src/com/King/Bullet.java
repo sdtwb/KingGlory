@@ -20,11 +20,11 @@ public class Bullet {
       BufferedImage fire[];
       
       Bullet(){
-    	  this.stillAlive= 0;
+    	  this.stillAlive= 1;
     	  this.toX= 0;
     	  this.toY= 0;
-    	  this.x= 0;
-    	  this.y= 0;
+    	  this.x= 1000;
+    	  this.y= 753;
     	  this.timeToBoom= 0;
     	  this.bullet= new BufferedImage[imageSum];
     	  this.water= new BufferedImage[imageSum];
@@ -51,7 +51,6 @@ public class Bullet {
 			e.printStackTrace();
 		  }
       }
-      
       public BufferedImage getBoom() {
     	  if(this.index== 4||this.index== 5)
     		   return this.water[4];
