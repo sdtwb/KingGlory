@@ -10,6 +10,7 @@ import java.awt.event.*;
 //import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,7 +22,18 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  * @author Wenbiao Tan
@@ -44,6 +56,7 @@ public class KingGloryBattle extends JPanel implements ActionListener, KeyListen
 	public static BufferedImage bulletImage;
 	public static BufferedImage victory;
 	public static Timer timer;
+	public static Timer timer1;
 	public static int index;
 	public static int position[][];
 	public static Bullet herroBullet[];
@@ -58,8 +71,14 @@ public class KingGloryBattle extends JPanel implements ActionListener, KeyListen
 	public static  Robbi robbiB;
 	public static int herroAnum;
 	public static int herroBnum;
+	public static ServerSocket server;
+	public static Socket client;
+	public static String operate;
+	public static String send;
 	static {
 		try {
+			server= new ServerSocket(8888);
+			
 			background= ImageIO.read(KingGloryBattle.class.getResource("map.jpg"));
 			people1= ImageIO.read(KingGloryBattle.class.getResource("people-LuBan.png"));
 			people2= ImageIO.read(KingGloryBattle.class.getResource("people-HouYi.png"));
@@ -69,7 +88,7 @@ public class KingGloryBattle extends JPanel implements ActionListener, KeyListen
 			people6= ImageIO.read(KingGloryBattle.class.getResource("people-ZhuGe.png"));
 			victory= ImageIO.read(KingGloryBattle.class.getResource("victory.png"));
 			
-			assassinA= new Assassin(600, 50);
+			assassinA= new Assassin(600, 55);
 			assassinB= new Assassin(700, 50);
 			fighterA= new Fighter(50, 550);
 			fighterB= new Fighter(800, 80);	
@@ -111,6 +130,10 @@ public class KingGloryBattle extends JPanel implements ActionListener, KeyListen
 		paintVictory(g);
 	}
 	
+	/**
+	 * 绘制胜利的图形
+	 * @param g  传入绘制的画板
+	 */
 	public void paintVictory(Graphics g) {
 		if(herroAnum== 0||herroBnum== 0) {
 			g.drawImage(victory, 0, 0, null);
@@ -289,7 +312,7 @@ public class KingGloryBattle extends JPanel implements ActionListener, KeyListen
 	
 	/**
 	 * 王者荣耀垃圾版主函数
-	 * @param args 没作用
+	 *
 	 */
     public void Button() {
     	button0.addActionListener(this);button0.setMnemonic(KeyEvent.VK_0);
@@ -339,11 +362,44 @@ public class KingGloryBattle extends JPanel implements ActionListener, KeyListen
             
 			game.action(); // 启动执行    	
     }
+    
+    /**
+                  * 用户的登陆界面
+     */
+    public void loginFrame() {
+    	   
+    	   JFrame login_frame= new JFrame("login");	   
+     	   JTextField text= new JTextField();
+    	   JPasswordField password= new JPasswordField(); 
+    	   JButton Confirm= new JButton("Confirm");
+    	   JButton Cancel= new JButton("Cancel");
+    	   JLabel user_label= new JLabel("users name:");
+    	   JLabel password_label= new JLabel("password:");
+    	   
+    	   user_label.setBounds(0,  0, 100, 20);
+    	   password_label.setBounds(0, 45, 100, 30);
+    	   text.setBounds(100, 0, 200, 30);
+    	   password.setBounds(100, 45, 200, 30);
+    	   Confirm.setBounds(50, 100, 100, 30);
+    	   Cancel.setBounds(160, 100, 100, 30);
+    	   login_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+           login_frame.setBounds(250, 350, 350, 200);
+    	   login_frame.setLayout(null);
+
+    	   login_frame.add(user_label);
+    	   login_frame.add(password_label);
+    	   login_frame.add(text);
+    	   login_frame.add(password);
+    	   login_frame.add(Confirm);
+    	   login_frame.add(Cancel);
+    	   login_frame.setVisible(true);
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		   // 面板对象
+		
          index= 0; 
-
+         game.loginFrame();
          game.Button();
          game.Frame();
 	}
@@ -382,6 +438,7 @@ public class KingGloryBattle extends JPanel implements ActionListener, KeyListen
 					  HerroStep();
 					  bulletStep();
 				     
+					  
 				}
 
 				repaint();
@@ -389,7 +446,102 @@ public class KingGloryBattle extends JPanel implements ActionListener, KeyListen
 			
 		},1000, 10);
 		
+		timer1= new Timer();
+		timer1.schedule(new TimerTask() {
+			public void run() {
+
+				makeOperate();			
+				ServerAchieve();
+				Explan();
+			}
+		},10, 1);
 		
+		
+	}
+	
+	/**
+	 * 生成可传输的命令
+	 */
+	public void makeOperate() {
+		 if(index== 0) {
+			 send= Integer.toString(index)+" "+Integer.toString(assassinA.x)+" "+Integer.toString(assassinA.y);
+		 }
+		 else if(index== 1) {
+			 send= Integer.toString(index)+" "+Integer.toString(assassinB.x)+" "+Integer.toString(assassinB.y);
+		 }
+		 else if(index== 2) {
+			 send= Integer.toString(index)+" "+Integer.toString(fighterA.x)+" "+Integer.toString(fighterA.y);
+		 }
+		 else if(index== 3) {
+			 send= Integer.toString(index)+" "+Integer.toString(fighterB.x)+" "+Integer.toString(fighterB.y);
+		 }
+		 else if(index== 4) {
+			 send= Integer.toString(index)+" "+Integer.toString(robbiA.x)+" "+Integer.toString(robbiA.y);
+		 }
+		 else if(index== 5) {
+			 send= Integer.toString(index)+" "+Integer.toString(robbiB.x)+" "+Integer.toString(robbiB.y);
+		 }
+	}
+	
+	/**
+	 * 解析传输过来的命令并改变相应的数值
+	 */
+	public void Explan() {
+		String [] op= operate.split(" ");
+		int heroSocket= Integer.parseInt(op[0]);
+		int xSocket= Integer.parseInt(op[1]);
+		int ySocket= Integer.parseInt(op[2]);
+		if(heroSocket== 0) {
+			assassinA.x= xSocket;
+			assassinA.y= ySocket;
+		}
+		else if(heroSocket== 1) {
+			assassinB.x= xSocket;
+			assassinB.y= ySocket;
+		}
+		else if(heroSocket== 2) {
+			fighterA.x= xSocket;
+			fighterA.y= ySocket;
+		}
+		else if(heroSocket== 3) {
+			fighterB.x= xSocket;
+			fighterB.y= ySocket;
+		}
+		else if(heroSocket== 4) {
+			robbiA.x= xSocket;
+			robbiA.y= ySocket;
+		}
+		else if(heroSocket== 5) {
+			robbiB.x= xSocket;
+			robbiB.y= ySocket;
+		}
+	}
+	
+	/**
+	 * 接受客户端传输过来的命令
+	 */
+	public void ServerAchieve() {
+	      try {
+	    	  while(true) {
+	    	  makeOperate();
+	          client= server.accept();
+	          
+	          BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));
+	          //读取客户端发送来的消息
+	          String mess = br.readLine(); 
+	          operate= mess;
+	          BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+	          bw.write(send+"\n"); 
+	          bw.flush();
+	          
+	          if(operate!= null)
+	          Explan();
+	          client.close();	    		  
+	    	  }
+
+	       } catch (IOException e) {
+	          e.printStackTrace();
+	       }
 	}
 	public void scanHerroAlive() {
 		herroAnum= 0;
@@ -433,18 +585,21 @@ public class KingGloryBattle extends JPanel implements ActionListener, KeyListen
 	 * 判断炸弹时候可以爆炸
 	 */
 	public void checkBullet() {
-		 for(int i= 0; i< Maxx; i++) {
-			 if(i!= index&&((herroBullet[index].getX()==position[i][0]+ 15)&&(herroBullet[index].getY()== position[i][1]+ 15))
-					 &&getHerroAlive(i)== 1) {
-				  if(herroBullet[index].stillAlive== 1)
-					  changeBeAttack(i);
-				  herroBullet[index].stillAlive= 0;
-				  herroBullet[index].timeToBoom= 1;
-			  
-				  			       
-			 }
-		 }
-
+         for(int i= 0 ;i< Maxx; i++) {
+        	 for(int j= 0; j< Maxx; j++) {
+    			 if(i!= j&&(i%2!= j%2)&&((herroBullet[i].getX()==position[j][0]+ 15)&&(herroBullet[i].getY()== position[j][1]+ 15))
+    					 &&getHerroAlive(j)== 1) {
+    				  if(herroBullet[i].stillAlive== 1) {
+     					  changeBeAttack(j);
+    				  herroBullet[i].stillAlive= 0;
+    				  herroBullet[i].timeToBoom= 1;  					  
+    				  }
+ 
+    			  
+    				  			       
+    			 }        		 
+        	 }
+         }
 	}
 	/**
 	 * 执行炸弹的下一步
@@ -481,21 +636,21 @@ public class KingGloryBattle extends JPanel implements ActionListener, KeyListen
 	 * 判断炸弹是否符合发射条件
 	 */
 	public void canAttack() {
-		for(int i= 0 ; i< Maxx ; i++) {
-			if(i!= index&&(position[index][0]== position[i][0]||position[index][1]== position[i][1])&&getHerroAlive(i)== 1) {
-				if(herroBullet[i].getStillAlive()== 0) {
-				  herroBullet[index].setStillAlive();
-				  herroBullet[index].setIndex(index);
-				  herroBullet[index].setBullet(position[index][0], position[index][1]);
-				
-				  if(position[index][1]== position[i][1])
-				  herroBullet[index].setToX(position[index][0]>  position[i][0]? -1: 1);
-			      if(position[index][0]== position[i][0])
-				  herroBullet[index].setToY(position[index][1]>  position[i][1]? -1: 1);	
-			      
-			     
-				}
+		for(int i= 0; i< Maxx; i++) {
+			for(int j= 0; j< Maxx; j++) {
+				if(j!= i&&(i%2!= j% 2)&&(position[i][0]== position[j][0]||position[i][1]== position[j][1])
+					&&getHerroAlive(j)== 1&&getHerroAlive(i)== 1) {
+					//if(herroBullet[j].getStillAlive()== 0) {
+					  herroBullet[i].setStillAlive();
+					  herroBullet[i].setIndex(i);
+					  herroBullet[i].setBullet(position[i][0], position[i][1]);
+					
+					  if(position[i][1]== position[j][1])
+					  herroBullet[i].setToX(position[i][0]>  position[j][0]? -1: 1);
+				      if(position[i][0]== position[j][0])
+					  herroBullet[i].setToY(position[i][1]>  position[j][1]? -1: 1);
 
+				}				
 			}
 		}
 	}
